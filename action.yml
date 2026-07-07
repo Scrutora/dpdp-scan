@@ -1,0 +1,35 @@
+name: 'Scrutora DPDP Scan'
+description: 'DPDPA / HIPAA compliance code scanning in CI — emits SARIF v2.1.0 for GitHub Code Scanning. No API key needed; code never leaves the runner.'
+author: 'Scrutora'
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  path:
+    description: 'Directory or file to scan (relative to the repo root).'
+    required: false
+    default: '.'
+  frameworks:
+    description: 'Comma-separated compliance frameworks (e.g. dpdpa, hipaa, gdpr, pcidss).'
+    required: false
+    default: 'dpdpa'
+  fail-on:
+    description: 'Fail the job when a finding at or above this severity is present: none | low | medium | high | critical.'
+    required: false
+    default: 'high'
+  sarif-file:
+    description: 'Path (relative to the repo root) to write the SARIF v2.1.0 results.'
+    required: false
+    default: 'scrutora.sarif'
+
+outputs:
+  sarif-file:
+    description: 'Path to the generated SARIF file (feed it to github/codeql-action/upload-sarif).'
+
+runs:
+  using: 'docker'
+  # The image bundles the scanner + entrypoint. Publish it once from the source
+  # repo (see Dockerfile) then pin a tag here. Override the org/name to match
+  # wherever you push the image.
+  image: 'docker://ghcr.io/nirvahana/dpdp-scan:latest'
