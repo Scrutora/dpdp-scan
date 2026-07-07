@@ -5,7 +5,9 @@ obligation (e.g. DPDPA §8(5)), not just a generic rule id, and surface in the
 **Security → Code scanning** tab via SARIF. Runs offline — **no API key, your
 code never leaves the runner.**
 
-## Usage
+## Quick start
+
+Add `.github/workflows/compliance.yml` to your repo:
 
 ```yaml
 name: Compliance
@@ -29,6 +31,20 @@ jobs:
           sarif_file: ${{ steps.scan.outputs.sarif-file }}
 ```
 
+Open a pull request (or push) and the scan runs automatically.
+
+## Where results appear
+
+1. **Security → Code scanning** tab — each finding as an alert with the file,
+   line, severity, and the compliance obligation it maps to. Click an alert for
+   the full message and remediation. *(Free on public repos; private repos need
+   GitHub Advanced Security — see below.)*
+2. **The Actions run log** — the full scan summary (counts by severity) under the
+   `dpdp-scan` step, for any repo.
+3. **The PR check** — with `fail-on` set (default `high`), the job fails when a
+   finding at/above that severity is present, so it can block a merge. Use
+   `fail-on: none` to report without failing.
+
 ## Inputs
 
 | Input | Default | Description |
@@ -46,7 +62,7 @@ jobs:
 
 SARIF rendering in the Code Scanning tab is free for **public** repos; **private**
 repos require GitHub Advanced Security. Without GHAS the job still runs and
-`fail-on` still gates the build — read the SARIF artifact or the job log instead.
+`fail-on` still gates the build — read the summary in the Actions log instead.
 
 ## About
 
