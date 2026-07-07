@@ -1,5 +1,5 @@
 name: 'Scrutora DPDP Scan'
-description: 'DPDPA / HIPAA compliance code scanning in CI — emits SARIF v2.1.0 for GitHub Code Scanning. No API key needed; code never leaves the runner.'
+description: 'DPDPA/HIPAA compliance scanning in CI. SARIF for GitHub Code Scanning; no API key, code never leaves the runner.'
 author: 'Scrutora'
 branding:
   icon: 'shield'
