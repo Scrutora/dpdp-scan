@@ -1,0 +1,33 @@
+name: selftest
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Scrutora DPDP Scan
+        id: scan
+        uses: ./
+        with:
+          path: .
+          frameworks: dpdpa,hipaa
+          fail-on: none
+          sarif-file: scrutora.sarif
+      - name: Show SARIF exists
+        if: always()
+        run: |
+          echo "exit=${{ steps.scan.outcome }}"
+          ls -la scrutora.sarif && echo "--- first 40 lines ---" && head -40 scrutora.sarif
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: scrutora.sarif
