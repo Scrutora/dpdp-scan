@@ -1,0 +1,40 @@
+# Scrutora Scan — Google Cloud Build
+#
+# Cloud Build runs each step as a container, so the Scrutora scanner image is a
+# build step directly — no Docker-in-Docker, no plugin, no Marketplace listing.
+# The repo is mounted at /workspace (the step's working directory); the scan is
+# fully offline and your code never leaves the build.
+#
+# Frameworks / severity are overridable via substitutions:
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions=_FRAMEWORKS="dpdpa,hipaa",_FAIL_ON="high"
+
+substitutions:
+  _FRAMEWORKS: "dpdpa,hipaa"
+  _FAIL_ON: "high"          # none | low | medium | high | critical
+  _SCAN_PATH: "."
+  _SARIF: "scrutora.sarif"
+
+steps:
+  - id: scrutora-scan
+    name: "ghcr.io/nirvahana/dpdp-scan:latest"
+    args:
+      - "scan"
+      - "${_SCAN_PATH}"
+      - "--no-ai"
+      - "--frameworks"
+      - "${_FRAMEWORKS}"
+      - "--fail-on"
+      - "${_FAIL_ON}"
+      - "--sarif-output"
+      - "${_SARIF}"
+
+# Optional: archive the SARIF report to a GCS bucket. Uncomment and set your
+# bucket. (Requires the Cloud Build service account to have write access.)
+# artifacts:
+#   objects:
+#     location: "gs://YOUR_BUCKET/scrutora/"
+#     paths: ["scrutora.sarif"]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
