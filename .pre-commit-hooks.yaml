@@ -1,0 +1,33 @@
+# Scrutora Scan — pre-commit hook.
+#
+# This file must live at the ROOT of the repo users reference (Scrutora/scrutora-scan).
+# Users add to their .pre-commit-config.yaml:
+#
+#   repos:
+#     - repo: https://github.com/Scrutora/scrutora-scan
+#       rev: v1              # pin a released tag
+#       hooks:
+#         - id: scrutora-scan
+#
+# Runs the compiled scanner image offline (no API key, code never leaves the
+# machine) and fails the commit on findings at or above --fail-on. Relies on the
+# image's dual-mode entrypoint: CLI args are passed straight to the scanner.
+- id: scrutora-scan
+  name: Scrutora Scan (DPDPA/HIPAA/GDPR/PCI compliance)
+  description: >-
+    Offline multi-framework compliance scan of the repo (DPDPA, HIPAA, GDPR,
+    PCI-DSS, RBI). SARIF output; code never leaves your machine.
+  entry: ghcr.io/nirvahana/dpdp-scan:latest
+  language: docker_image
+  pass_filenames: false
+  always_run: true
+  args:
+    - scan
+    - "."
+    - --no-ai
+    - --frameworks
+    - dpdpa,hipaa
+    - --fail-on
+    - high
+    - --sarif-output
+    - scrutora.sarif
