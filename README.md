@@ -1,9 +1,9 @@
-# Scrutora DPDP Scan — GitHub Action
+# Scrutora Scan — GitHub Action
 
-Free **DPDPA / HIPAA compliance** code scanning in CI. Findings cite the exact
-obligation (e.g. DPDPA §8(5)), not just a generic rule id, and surface in the
-**Security → Code scanning** tab via SARIF. Runs offline — **no API key, your
-code never leaves the runner.**
+Free **DPDPA / HIPAA / GDPR / PCI-DSS compliance** code scanning in CI. Findings
+cite the exact obligation (e.g. DPDPA §8(5)), not just a generic rule id, and
+surface in the **Security → Code scanning** tab via SARIF. Runs offline — **no
+API key, your code never leaves the runner.**
 
 ## Quick start
 
@@ -16,12 +16,12 @@ permissions:
   contents: read
   security-events: write   # required to upload SARIF to Code Scanning
 jobs:
-  dpdp-scan:
+  scrutora-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - id: scan
-        uses: Scrutora/dpdp-scan@v1
+        uses: Scrutora/scrutora-scan@v1
         with:
           frameworks: dpdpa,hipaa   # default: dpdpa
           fail-on: high             # none|low|medium|high|critical (default: high)
@@ -40,7 +40,7 @@ Open a pull request (or push) and the scan runs automatically.
    the full message and remediation. *(Free on public repos; private repos need
    GitHub Advanced Security — see below.)*
 2. **The Actions run log** — the full scan summary (counts by severity) under the
-   `dpdp-scan` step, for any repo.
+   `scrutora-scan` step, for any repo.
 3. **The PR check** — with `fail-on` set (default `high`), the job fails when a
    finding at/above that severity is present, so it can block a merge. Use
    `fail-on: none` to report without failing.
@@ -66,7 +66,10 @@ repos require GitHub Advanced Security. Without GHAS the job still runs and
 
 ## About
 
-The free CI wedge for [Scrutora](https://securehealth-ai.com) — the code → cloud →
+The free CI wedge for [Scrutora](https://scrutora.com) — the code → cloud →
 consent compliance platform. This Action gives you DPDPA/HIPAA findings in your
 pull requests; the Scrutora platform adds cross-module data lineage, RoPA, cloud
 posture (CSPM), consent management and AI remediation.
+
+More integrations (GitLab, CircleCI, Bitbucket, Azure Pipelines, Google Cloud
+Build, pre-commit, Docker, VS Code): <https://scrutora.com/integrations>.

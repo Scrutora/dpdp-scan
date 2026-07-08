@@ -5,12 +5,12 @@ permissions:
   contents: read
   security-events: write
 jobs:
-  dpdp-scan:
+  scrutora-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - id: scan
-        uses: scrutora/dpdp-scan@v1
+        uses: Scrutora/scrutora-scan@v1
         with:
           frameworks: dpdpa,hipaa
           fail-on: high
